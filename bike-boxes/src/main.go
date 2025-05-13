@@ -8,7 +8,7 @@ import (
 	"syscall"
 )
 
-// Define custom errors
+//custom errors
 var (
 	ErrMissingCredentials = errors.New("missing required credentials (CLIENT_ID or CLIENT_SECRET)")
 )

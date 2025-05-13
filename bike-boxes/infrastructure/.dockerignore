@@ -1,29 +1,29 @@
-# Git
+# git
 .git
 .gitignore
 
-# Docker
+# docker
 Dockerfile
 docker-compose.yml
 .dockerignore
 
-# Environment variables
+# environment variables
 .env*
 
 # Logs
 logs/
 *.log
 
-# Binaries and builds
+# binaries and builds
 bikeboxes-collector
 /bin/
 /tmp/
 
-# IDE specific files
+# files
 .idea/
 .vscode/
 *.swp
 *.swo
 
-# MongoDB data
+# mongo data
 mongodb-data/

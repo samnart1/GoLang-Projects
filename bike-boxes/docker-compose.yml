@@ -5,6 +5,8 @@ services:
       dockerfile: ./infrastructure/Dockerfile
     container_name: bikeboxes-collector
     restart: unless-stopped
+    env_file:
+      - .env
     depends_on:
       - mongodb
     environment:
