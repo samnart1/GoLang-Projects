@@ -31,9 +31,9 @@ func LoadConfig() (Config, error) {
 
 	// Setup configuration
 	config := Config{
-		APIEndpoint:      getEnv("API_ENDPOINT", ""),
-		ClientID:         getEnv("CLIENT_ID", ""),
-		ClientSecret:     getEnv("CLIENT_SECRET", ""),
+		APIEndpoint:      getEnv("API_ENDPOINT", "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect/token"),
+		ClientID:         getEnv("CLIENT_ID", "odh-mobility-datacollector-bike-boxes"),
+		ClientSecret:     getEnv("CLIENT_SECRET", "7bd46f8f-c296-416d-a13d-dc81e68d0830"),
 		MongoURI:         getEnv("MONGO_URI", "mongodb://localhost:27017"),
 		MongoDatabase:    getEnv("MONGO_DATABASE", "bikeboxes"),
 		CollectionPrefix: getEnv("COLLECTION_PREFIX", "raw"),
