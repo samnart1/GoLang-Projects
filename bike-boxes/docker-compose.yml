@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./infrastructure/Dockerfile
+    container_name: bikeboxes-collector
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      - API_ENDPOINT=${API_ENDPOINT}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - MONGO_URI=mongodb://mongodb:27017
+      - MONGO_DATABASE=${MONGO_DATABASE:-bikeboxes}
+      - COLLECTION_PREFIX=${COLLECTION_PREFIX:-raw}
+      - JOB_SCHEDULE=${JOB_SCHEDULE:-*/15 * * * *}
+      - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE:-it}
+      - LANGUAGES=${LANGUAGES:-it,en,de,lld}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - bikeboxes-network
+    volumes:
+      - ./logs:/app/logs
+
+  mongodb:
+    image: mongo:6.0
+    container_name: bikeboxes-mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE:-bikeboxes}
+      # - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME:-admin}
+      # - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD:-password}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    networks:
+      - bikeboxes-network
+    command: ["--bind_ip", "0.0.0.0"]
+
+networks:
+  bikeboxes-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
+  mongodb-config:
