@@ -16,7 +16,6 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-// BikeLocation represents a location with bike stations
 type BikeLocation struct {
 	Name                    string                 `json:"name"`
 	LocationID              int                    `json:"locationID"`
@@ -26,13 +25,11 @@ type BikeLocation struct {
 	RawData                 map[string]interface{} `json:"rawData,omitempty"`
 }
 
-// LocationStation represents a station within a location
 type LocationStation struct {
 	StationID int `json:"stationID"`
 	Type      int `json:"type"`
 }
 
-// BikeStation represents a bike station with availability information
 type BikeStation struct {
 	StationID                         int               		`json:"stationID"`
 	LocationName                      string            		`json:"locationName"`
@@ -54,7 +51,6 @@ type BikeStation struct {
 	RawData                           map[string]interface{}	`json:"rawData,omitempty"`
 }
 
-// Place represents a bike place/slot within a station
 type Place struct {
 	Position int `json:"position"`
 	State    int `json:"state"`
@@ -62,7 +58,6 @@ type Place struct {
 	Type     int `json:"type"`
 }
 
-// Collector handles data collection from bike data API
 type Collector struct {
 	config        Config
 	client        *http.Client
@@ -74,7 +69,6 @@ type Collector struct {
 	httpTransport *http.Transport
 }
 
-// NewCollector creates a new collector instance
 func NewCollector(config Config) (*Collector, error) {
 	oauth2Config := &clientcredentials.Config{
 		ClientID:     config.ClientID,
@@ -82,7 +76,6 @@ func NewCollector(config Config) (*Collector, error) {
 		TokenURL:     fmt.Sprintf("%s/connect/token", config.APIEndpoint),
 	}
 
-	// Create custom transport with reasonable timeouts
 	transport := &http.Transport{
 		MaxIdleConns:        10,
 		MaxIdleConnsPerHost: 10,
@@ -90,27 +83,22 @@ func NewCollector(config Config) (*Collector, error) {
 		IdleConnTimeout:     30 * time.Second,
 	}
 
-	// Setup context for MongoDB
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Connect to MongoDB
 	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(config.MongoURI))
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to MongoDB: %w", err)
 	}
 
-	// Ping MongoDB to verify connection
 	if err := mongoClient.Ping(ctx, nil); err != nil {
 		return nil, fmt.Errorf("failed to ping MongoDB: %w", err)
 	}
 
-	// Setup collections
 	db := mongoClient.Database(config.MongoDatabase)
 	locationsCol := db.Collection(config.CollectionPrefix + "_locations")
 	stationsCol := db.Collection(config.CollectionPrefix + "_stations")
 
-	// Create indexes
 	locIdx := mongo.IndexModel{
 		Keys: bson.D{{Key: "locationID", Value: 1}},
 	}
@@ -148,31 +136,25 @@ func NewCollector(config Config) (*Collector, error) {
 		httpTransport: transport,
 	}
 
-	// Pass transport to the OAuth client
 	collector.client.Transport = transport
 
 	return collector, nil
 }
 
-// Start begins the collector job scheduler
 func (c *Collector) Start() {
 	log.Println("Starting BikeBoxes Collector")
 
-	// Schedule the collector job
 	_, err := c.scheduler.Cron(c.config.JobSchedule).Do(c.collectData)
 	if err != nil {
 		log.Fatalf("Failed to schedule collector job: %v", err)
 	}
 
-	// Start the scheduler
 	c.scheduler.StartAsync()
 	log.Printf("Collector job scheduled with cron: %s", c.config.JobSchedule)
 
-	// Run once at startup
 	c.collectData()
 }
 
-// Stop gracefully stops the collector
 func (c *Collector) Stop() error {
 	log.Println("Stopping BikeBoxes Collector")
 	c.scheduler.Stop()
@@ -188,12 +170,10 @@ func (c *Collector) Stop() error {
 	return nil
 }
 
-// collectData is the main function that collects all data
 func (c *Collector) collectData() {
 	log.Println("Starting data collection job")
 	startTime := time.Now()
 	
-	// Get the bike locations first
 	locations, err := c.getBikeLocations()
 	if err != nil {
 		log.Printf("Error fetching bike locations: %v", err)
@@ -202,11 +182,9 @@ func (c *Collector) collectData() {
 	
 	log.Printf("Found %d bike locations", len(locations))
 	
-	// Process each location and get its stations
 	var wg sync.WaitGroup
 	stationChan := make(chan *BikeStation, 100)
 	
-	// Start MongoDB writer goroutine
 	doneChan := make(chan bool)
 	go func() {
 		stationBatch := make([]*BikeStation, 0)
@@ -218,7 +196,7 @@ func (c *Collector) collectData() {
 			select {
 			case station, more := <-stationChan:
 				if !more {
-					// Channel closed, process any remaining stations
+					
 					if len(stationBatch) > 0 {
 						c.saveStationBatch(stationBatch)
 					}
@@ -241,12 +219,10 @@ func (c *Collector) collectData() {
 		}
 	}()
 	
-	// Save the locations to MongoDB
 	if err := c.saveLocations(locations); err != nil {
 		log.Printf("Error saving locations to MongoDB: %v", err)
 	}
 	
-	// Process each location to get its stations
 	for _, location := range locations {
 		wg.Add(1)
 		go func(loc BikeLocation) {
@@ -259,18 +235,15 @@ func (c *Collector) collectData() {
 					continue
 				}
 				
-				// Set location name
 				station.LocationName = loc.Name
 				station.LocationID = loc.LocationID
 				station.CollectedAt = time.Now()
 				
-				// Send the station to the channel
 				stationChan <- station
 			}
 		}(location)
 	}
 	
-	// Wait for all goroutines to finish
 	wg.Wait()
 	close(stationChan)
 	<-doneChan
@@ -279,31 +252,27 @@ func (c *Collector) collectData() {
 	log.Printf("Data collection job completed in %v", duration)
 }
 
-// getBikeLocations fetches all bike locations from the API
 func (c *Collector) getBikeLocations() ([]BikeLocation, error) {
-	// Get locations using the default language first
+	
 	defaultLocations, err := c.getBikeLocationsWithLanguage(c.config.DefaultLanguage)
 	if err != nil {
 		return nil, err
 	}
 	
-	// Initialize translatedLocationNames for each location
 	for i := range defaultLocations {
 		defaultLocations[i].TranslatedLocationNames = make(map[string]string)
 		defaultLocations[i].TranslatedLocationNames[c.config.DefaultLanguage] = defaultLocations[i].Name
 		defaultLocations[i].CollectedAt = time.Now()
 	}
 	
-	// Map locations by ID for easy access
 	locationMap := make(map[int]*BikeLocation)
 	for i := range defaultLocations {
 		locationMap[defaultLocations[i].LocationID] = &defaultLocations[i]
 	}
 	
-	// Get translations for all configured languages
 	for _, lang := range c.config.Languages {
 		if lang == c.config.DefaultLanguage {
-			continue // Skip default language as we already have it
+			continue 
 		}
 		
 		translatedLocations, err := c.getBikeLocationsWithLanguage(lang)
@@ -312,7 +281,6 @@ func (c *Collector) getBikeLocations() ([]BikeLocation, error) {
 			continue
 		}
 		
-		// Add translations to the map
 		for _, translatedLoc := range translatedLocations {
 			if loc, exists := locationMap[translatedLoc.LocationID]; exists {
 				loc.TranslatedLocationNames[lang] = translatedLoc.Name
@@ -320,7 +288,6 @@ func (c *Collector) getBikeLocations() ([]BikeLocation, error) {
 		}
 	}
 	
-	// Convert map back to slice
 	result := make([]BikeLocation, 0, len(locationMap))
 	for _, loc := range locationMap {
 		result = append(result, *loc)
@@ -329,7 +296,7 @@ func (c *Collector) getBikeLocations() ([]BikeLocation, error) {
 	return result, nil
 }
 
-// getBikeLocationsWithLanguage fetches bike locations for a specific language
+
 func (c *Collector) getBikeLocationsWithLanguage(language string) ([]BikeLocation, error) {
 	url := fmt.Sprintf("%s/resources/locations?languageID=%s", c.config.APIEndpoint, language)
 	
@@ -398,7 +365,6 @@ func (c *Collector) getBikeStation(stationID int) (*BikeStation, error) {
 	return station, nil
 }
 
-// getBikeStationWithLanguage fetches a station with a specific language
 func (c *Collector) getBikeStationWithLanguage(stationID int, language string) (*BikeStation, error) {
 	url := fmt.Sprintf("%s/resources/station?languageID=%s&stationID=%d", 
 		c.config.APIEndpoint, language, stationID)
@@ -432,7 +398,6 @@ func (c *Collector) getBikeStationWithLanguage(stationID int, language string) (
 	return &station, nil
 }
 
-// saveLocations saves a batch of locations to MongoDB
 func (c *Collector) saveLocations(locations []BikeLocation) error {
 	if len(locations) == 0 {
 		return nil
@@ -441,13 +406,12 @@ func (c *Collector) saveLocations(locations []BikeLocation) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	
-	// Convert to interface{} slice for MongoDB
+	
 	docs := make([]interface{}, len(locations))
 	for i, loc := range locations {
 		docs[i] = loc
 	}
 	
-	// Insert into MongoDB
 	_, err := c.locationsCol.InsertMany(ctx, docs)
 	if err != nil {
 		return fmt.Errorf("failed to insert locations: %w", err)
@@ -457,7 +421,6 @@ func (c *Collector) saveLocations(locations []BikeLocation) error {
 	return nil
 }
 
-// saveStationBatch saves a batch of stations to MongoDB
 func (c *Collector) saveStationBatch(stations []*BikeStation) {
 	if len(stations) == 0 {
 		return
@@ -466,13 +429,11 @@ func (c *Collector) saveStationBatch(stations []*BikeStation) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	
-	// Convert to interface{} slice for MongoDB
 	docs := make([]interface{}, len(stations))
 	for i, station := range stations {
 		docs[i] = station
 	}
 	
-	// Insert into MongoDB
 	_, err := c.stationsCol.InsertMany(ctx, docs)
 	if err != nil {
 		log.Printf("Failed to insert stations: %v", err)
