@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
+	"github.com/gorilla/chatApp/websocket"
 )
 
 // client represents a single chatting user.
