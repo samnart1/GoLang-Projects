@@ -92,4 +92,28 @@ func showHelp(calc *calculator.Calculator) {
 	fmt.Println()
 }
 
-func showHistory(calc *calculator.Calculator, verbose bool) {}
+func showHistory(calc *calculator.Calculator, verbose bool) {
+	history := calc.GetHistory()
+
+	if len(history) == 0 {
+		fmt.Println("No calculations in history")
+		return
+	}
+
+	fmt.Printf("\nCalculation History (%d entries):\n", len(history))
+
+	for i, entry := range history {
+		if entry.Error != nil {
+			fmt.Printf("%d. %s -> Error: %v\n", i+1, entry.Expression.Raw, entry.Error)
+		} else {
+			formattedResult := calc.FormatResult(entry.Result, entry.Expression)
+			fmt.Printf("%d. %s = %s\n", i+1, entry.Expression.Raw, formattedResult)
+
+			if verbose {
+				fmt.Printf("	(Raw result: %f)\n", entry.Result)
+			}
+		}
+	}
+	fmt.Println()
+}
+
