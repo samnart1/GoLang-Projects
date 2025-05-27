@@ -1,4 +1,4 @@
-module github.com/samnart/GoLang-projects/001hello
+module github.com/samnart1/GoLang-Projects/tree/main/001hello
 
 go 1.24.1
 
