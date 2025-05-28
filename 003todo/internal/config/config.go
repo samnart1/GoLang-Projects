@@ -18,12 +18,24 @@ func New() *Config {
 		homeDir = "."
 	}
 
-	dataDir := filepath.Join(homeDir, "todo")
+	dataDir := filepath.Join(homeDir, ".todo")
 
 	return &Config{
 		DataDir: dataDir,
-		BackupDir: filepath.Join(dataDir, "backups"),
-		TasksFile: filepath.Join(dataDir, "tasks.json"),
+		BackupDir: filepath.Join(homeDir, "backups"),
+		TasksFile: filepath.Join(homeDir, "tasks.json"),
 		MaxBackups: 10,
 	}
+}
+
+func (c *Config) EnsureDirectories() error {
+	dirs := []string{c.DataDir, c.BackupDir}
+
+	for _, dir := range dirs {
+		if err := os.MkdirAll(dir, 07555); err != nil {
+			return err
+		}
+	}
+	
+	return nil
 }
