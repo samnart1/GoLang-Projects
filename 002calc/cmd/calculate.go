@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/samnart1/GoLang-Projects/tree/main/002calc/internal/calculator"
+	"github.com/samnart1/GoLang-Projects/002calc/internal/calculator"
 	"github.com/spf13/cobra"
 )
 

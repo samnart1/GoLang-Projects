@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/samnart1/GoLang-Projects/tree/main/002calc/pkg/version"
+	"github.com/samnart1/GoLang-Projects/002calc/pkg/version"
 	"github.com/spf13/cobra"
 )
 

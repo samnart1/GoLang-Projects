@@ -14,8 +14,8 @@ A production-ready calculator CLI application built with Go, featuring both dire
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/calculator-cli.git
-cd calculator-cli
+git clone https://github.com/samnart1/GoLang-Projects.git
+cd GoLang-Projects/002calc
 make install
 ```
 
@@ -70,21 +70,21 @@ calc> exit
 
 ```
 calculator-cli/
-├── cmd/                 # CLI commands
-│   ├── root.go         # Root command setup
-│   ├── calculate.go    # Direct calculation command
-│   └── interactive.go  # Interactive mode command
+├── cmd/                        # CLI commands
+│   ├── root.go                 # Root command setup
+│   ├── calculate.go            # Direct calculation command
+│   └── interactive.go          # Interactive mode command
 ├── internal/
-│   ├── calculator/     # Core calculator logic
-│   │   ├── calculator.go   # Main calculator struct
-│   │   ├── operations.go   # Mathematical operations
-│   │   └── parser.go       # Expression parsing
-│   └── ui/             # User interface
-│       └── interactive.go  # Interactive mode UI
+│   ├── calculator/             # Core calculator logic
+│   │   ├── calculator.go       # Main calculator struct
+│   │   ├── operations.go       # Mathematical operations
+│   │   └── parser.go           # Expression parsing
+│   └── ui/                     # User interface
+│       └── interactive.go      # Interactive mode UI
 ├── pkg/
-│   ├── version/        # Version information
-│   └── errors/         # Custom error types
-└── main.go            # Application entry point
+│   ├── version/                # Version information
+│   └── errors/                 # Custom error types
+└── main.go                     # Application entry point
 ```
 
 ## Development
@@ -93,12 +93,9 @@ calculator-cli/
 # Build
 make build
 
-# Run tests
-make test
-
 # Quick test runs
-make run-calc          # Test direct calculation
-make run-interactive   # Test interactive mode
+make run-calc         
+make run-interactive   
 
 # Clean
 make clean
@@ -108,13 +105,13 @@ make clean
 
 This calculator project introduces several new Go concepts:
 
-1. **Regular expressions** for parsing mathematical expressions
-2. **Custom error types** with context information  
-3. **Interactive user input** with bufio.Scanner
-4. **Mathematical operations** using the math package
-5. **Data structures** like slices for history storage
-6. **String manipulation** and formatting
-7. **Multiple command structure** with Cobra subcommands
+1. **Regular expressions**:         for parsing mathematical expressions
+2. **Custom error types**:          with context information  
+3. **Interactive user input**:      with bufio.Scanner
+4. **Mathematical operations**:     using the math package
+5. **Data structures**:             like slices for history storage
+6. **String manipulation**:         and formatting
+7. **Multiple command structure**:  with Cobra subcommands
 
 ## Examples
 

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	calcErrors "github.com/samnart1/GoLang-Projects/tree/main/002calc/pkg/errors"
+	calcErrors "github.com/samnart1/GoLang-Projects/002calc/pkg/errors"
 )
 
 type Expression struct {

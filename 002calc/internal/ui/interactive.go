@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/samnart1/GoLang-Projects/tree/main/002calc/internal/calculator"
+	"github.com/samnart1/GoLang-Projects/002calc/internal/calculator"
 )
 
 func InteractiveMode(verbose bool) error {
@@ -58,7 +58,7 @@ func InteractiveMode(verbose bool) error {
 		expr, _ := calculator.ParseExpression(input)
 		formatedResult := calc.FormatResult(result, expr)
 
-		fmt.Printf("=%s\n", formatedResult)
+		fmt.Printf("= %s\n", formatedResult)
 
 		if verbose {
 			fmt.Printf("	(Input: %s, Result: %f)\n", input, result)

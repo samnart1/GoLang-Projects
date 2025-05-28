@@ -5,9 +5,9 @@ VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev
 GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-LDFLAGS := -ldflags "-X github.com/samnart1/GoLang-Projects/tree/calc/002calc/pkg/version.Version=$(VERSION) \
-                     -X github.com/samnart1/GoLang-Projects/tree/calc/002calc/pkg/version.GitCommit=$(GIT_COMMIT) \
-                     -X github.com/samnart1/GoLang-Projects/tree/calc/002calc/pkg/version.BuildDate=$(BUILD_DATE)"
+LDFLAGS := -ldflags "-X github.com/samnart1/GoLang-Projects/002calc/pkg/version.Version=$(VERSION) \
+                     -X github.com/samnart1/GoLang-Projects/002calc/pkg/version.GitCommit=$(GIT_COMMIT) \
+                     -X github.com/samnart1/GoLang-Projects/002calc/pkg/version.BuildDate=$(BUILD_DATE)"
 
 ## build: Build the calculator application
 build:
