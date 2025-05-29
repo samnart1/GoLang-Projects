@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/samnart1/GoLang-Projects/tree/main/001hello/cmd"
+	"github.com/samnart1/GoLang-Projects/001hello/cmd"
 )
 
 func main() {
