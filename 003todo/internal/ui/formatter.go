@@ -87,3 +87,37 @@ func (f *TaskFormatter) FormatTask(t *task.Task) string {
 
 	return strings.Join(parts, " ")
 }
+
+func (f *TaskFormatter) FormatTaskList(tasks []*task.Task) string {
+	if len(tasks) == 0 {
+		return "No tasks found"
+	}
+
+	var lines []string
+	for _, task := range tasks {
+		lines = append(lines, f.FormatTask(task))
+	}
+
+	return strings.Join(lines, "\n")
+}
+
+func (f *TaskFormatter) SetOptions(opts map[string]bool) {
+	if showID, ok := opts["showID"]; ok {
+		f.showID = showID
+	}
+	if showStatus, ok := opts["showStatus"]; ok {
+		f.showStatus = showStatus
+	}
+	if showPriority, ok := opts["showPriority"]; ok {
+		f.showPriority = showPriority
+	}
+	if showDueDate, ok := opts["showDueDate"]; ok {
+		f.showDueDate = showDueDate
+	}
+	if showTags, ok := opts["showTags"]; ok {
+		f.showTags = showTags
+	}
+	if colorOutput, ok := opts["colorOutput"]; ok {
+		f.colorOutput = colorOutput
+	}
+}
