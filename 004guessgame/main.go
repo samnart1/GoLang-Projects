@@ -3,17 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/samnart1/GoLang-Projects/004guessgame/cmd"
 )
 
 func main() {
-	fmt.Println("We are building a guessing game!")
-	if err := something(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+	if err := cmd.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v", err)
 		os.Exit(1)
 	}
-}
-
-func something() error {
-	fmt.Println("haha got you")
-	return nil
 }
