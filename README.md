@@ -1,4 +1,48 @@
 # Simple GoLang Projects
+Welcome to my GoLang Projects repository!
+This is a personal collection of projects I'm building as I learn and deepen my knowledge of Go (Golang) and software engineering fundamentals.
+
+## About This Repository
+This repository contains a range of projects, starting from simple beginner programs to more advanced applications and backend services. The idea is to progressively build my tackling different types of problems and concepts in Go.
+
+I'll be continuously adding and refining projects here a sI learn - feel free to explore, clone or suggest improvements!
+
+## Project List
+|Project          | Description                                              |
+|:----------------|:---------------------------------------------------------| 
+|`001hello`       | A simple Hello World program with basic modification     |
+|`002calc`        | A tiny calculator performing basic arithmetic operations.|
+|`003todo`        | A basic CLI-based to-do list manager.                    |
+
+*(This table will grow as I add new projects - stay tuned!)*
+
+## Tech Stack
+
+- **Language**: [Go](https://go.dev/)
+- **Tools**: Makefile, Docker (for some projects)
+
+## How to Use
+
+1. Clone this repository
+   ```bash
+   git clone https://github.com/samnart1/GoLang-Projects.gi
+   cd GoLang-Projects
+   ```
+2. Navigate to any project directory.
+3. Run the Go program:
+   ```bash
+   go run main.go
+   ```
+
+## Goals
+- Master core Go syntax and idioms.
+- Learn about concurrency, networking, and server development.
+- Apply software engineering best practices.
+- Build real-world backend services and utilities.
+
+## License
+This project is open source and available under the [MIT License](LICENSE)
+> [Sam Nart](https://samnart1.github.io/samnart1/)
 
 <!--Beginner Projects (0–10): 
 Hello World CLI: Your first Go program—print "Hello, World!" to the console.
