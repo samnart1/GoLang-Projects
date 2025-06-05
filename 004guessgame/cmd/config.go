@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/samnart1/GoLang-Projects/004guessgame/internal/config"
+	"github.com/samnart1/GoLang-Projects/004guessgame/internal/ui"
+	"github.com/spf13/cobra"
+)
 
 var configCmd = &cobra.Command{
 	Use: "config",
@@ -10,12 +14,12 @@ var configCmd = &cobra.Command{
 }
 
 func runConfig(cmd *cobra.Command, args []string) error {
-	// cfg, err := config.Load()
-	// if err != nil {
-	// 	return err
-	// }
+	cfg, err := config.Load()
+	if err != nil {
+		return err
+	}
 
-	// ui.ShowConfig(cfg)
+	ui.ShowConfig(cfg)
 	
 	return nil
 }

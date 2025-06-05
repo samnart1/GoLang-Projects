@@ -14,7 +14,7 @@ func Execute() error {
 
 func init() {
 	rootCmd.AddCommand(configCmd)
-	// rootCmd.AddCommand(playCmd)
-	// rootCmd.AddCommand(resetCmd)
-	// rootCmd.AddCommand(statsCmd)
+	rootCmd.AddCommand(playCmd)
+	rootCmd.AddCommand(resetCmd)
+	rootCmd.AddCommand(statsCmd)
 }
