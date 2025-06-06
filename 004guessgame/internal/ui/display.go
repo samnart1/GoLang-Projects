@@ -20,6 +20,7 @@ func ShowGameStart(min, max int, difficulty string, timeLimit time.Duration) {
 		fmt.Printf("Time limit: %v\n", timeLimit)
 	}
 	fmt.Printf("I'm thinking of a number between %d and %d\n", min, max)
+	fmt.Println("Let's see how many guesses it takes you!")
 	fmt.Println()
 }
 
@@ -30,12 +31,30 @@ func ShowHint(hint string) {
 
 func ShowWin(guesses int, duration time.Duration) {
 	fmt.Printf("Congratulations! You guessed it in %d atempts!\n", guesses)
-	fmt.Printf("Time taken %v\n", duration)
+	fmt.Printf("Time taken %v\n", duration.Round(time.Second))
+
+	switch {
+	case guesses == 1:
+		fmt.Println("Incredible! You got it on the first try!")
+	case guesses <= 3:
+		fmt.Println("Excellent guessing!")
+	case guesses <= 5:
+		fmt.Println("Good job!")
+	case guesses <= 10:
+		fmt.Println("Not bad!")
+	default:
+		fmt.Println("Better luck next time!")
+	}
 	fmt.Println()
 }
 
 func ShowTimeout() {
 	fmt.Println("Time's up! Better luck next time!")
+	fmt.Println()
+}
+
+func ShowAnswer(answer int) {
+	fmt.Printf("The number was: %d\n", answer)
 	fmt.Println()
 }
 
@@ -60,18 +79,21 @@ func ShowStats(stats *storage.Stats, scores storage.Scores) {
 		fmt.Printf("Average Guesses: %.1f\n", avgGuesses)
 	}
 
+	fmt.Printf("Current Streak: %d\n", stats.CurrentStreak)
+	fmt.Printf("Best Streak: %d\n", stats.BestStreak)
+
 	fmt.Println()
 
 	if len(scores) > 0 {
 		fmt.Println("Recent High Scores")
 		fmt.Println("==================")
 
-		start := len(scores) - 5
-		if start < 0 {
-			start = 0
+		displayCount := 5
+		if len(scores) < displayCount {
+			displayCount = len(scores)
 		}
 
-		for i := len(scores) - 1; i >= start; i-- {
+		for i := 0; i < displayCount; i++ {
 			score := scores[i]
 			fmt.Printf("%s: %d guesses in %v (%s)\n",
 				score.Difficulty,
@@ -80,6 +102,7 @@ func ShowStats(stats *storage.Stats, scores storage.Scores) {
 				score.Date.Format("20006-01-02"),
 			)
 		}
+		fmt.Println()
 	}
 }
 

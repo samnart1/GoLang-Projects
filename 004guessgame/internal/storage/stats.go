@@ -10,6 +10,8 @@ type Stats struct {
 	GamesPlayed 	int `json:"games_played"`
 	GamesWon		int	`json:"games_won"`
 	TotalGuesses	int	`json:"total_guesses"`
+	BestStreak		int `json:"best_streak"`
+	CurrentStreak	int `json:"current_streak"`
 }
 
 func LoadStats() (*Stats, error) {

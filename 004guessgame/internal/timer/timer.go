@@ -32,13 +32,24 @@ func (t *Timer) Start() {
 			if remaining <= 0 {
 				return
 			}
-			if remaining <= 30*time.Second {
+
+			// show countdown for last 30 seconds
+			if remaining <= 30*time.Second && remaining > 20*time.Second {
 				fmt.Printf("%v remaining!\n", remaining.Round(time.Second))
+			} else if remaining <= 10*time.Second {
+				fmt.Printf("Only %v left!\n", remaining.Round(time.Second))
 			}
 		}
 	}
 }
 
 func (t *Timer) Stop() {
-	close(t.done)
+	if t.done != nil {
+		select {
+		case <-t.done:
+			// Channel already closed
+		default:
+			close(t.done)
+		}
+	}
 }

@@ -57,10 +57,10 @@ func (c *Config) Save() error {
 
 func defaultConfig() *Config {
 	return &Config{
-		DefaultDifficulty: "medium",
-		EnableColors: true,
-		EnableSound: false,
-		DefaultTimeLimit: 0,
+		DefaultDifficulty: 	"medium",
+		EnableColors: 		true,
+		EnableSound: 		false,
+		DefaultTimeLimit: 	0,
 	}
 }
 

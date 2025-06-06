@@ -13,9 +13,16 @@ func GetGuess(min, max int) (int, error) {
 
 	for {
 		fmt.Printf("Enter your guess (%d-%d): ", min, max)
-		input, _, err := reader.ReadLine()
+		input, err := reader.ReadString('\n')
 		if err != nil {
 			return 0, err
+		}
+
+		// lets handle quit commands
+		trimmed := strings.TrimSpace(strings.ToLower(input))
+		if trimmed == "quit" || trimmed == "exit" || trimmed == "q" {
+			fmt.Println("Thanks for playing!")
+			os.Exit(0)
 		}
 
 		guess, err := strconv.Atoi(strings.TrimSpace(string(input)))

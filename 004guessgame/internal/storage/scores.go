@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 )
 
@@ -35,6 +36,10 @@ func LoadScores() (Scores, error) {
 	if err := json.Unmarshal(data, &scores); err != nil {
 		return nil, err
 	}
+
+	sort.Slice(scores, func(i, j int) bool {
+		return scores[i].Date.After(scores[j].Date)
+	})
 
 	return scores, nil
 }
