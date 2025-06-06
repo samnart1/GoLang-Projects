@@ -24,7 +24,7 @@ var playCmd = &cobra.Command{
 func init() {
 	playCmd.Flags().StringVarP(&difficulty, "difficulty", "d", "medium", "Game difficulty (easy, medium, hard, custom)")
 	playCmd.Flags().IntVarP(&timeLimit, "time", "t", 0, "Time limit in seconds (0 for no limit)")
-	playCmd.Flags().BoolVarP(&hints, "hints", "h", true, "Enable hints")
+	playCmd.Flags().BoolVarP(&hints, "hints", "i", true, "Enable hints")
 }
 
 func runPlay(cmd *cobra.Command, args []string) error {

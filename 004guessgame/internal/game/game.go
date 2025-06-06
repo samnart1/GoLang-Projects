@@ -17,11 +17,11 @@ type Game struct {
 	max			int
 	difficulty	Difficulty
 	timeLimit	time.Duration
+	timer 		*timer.Timer
 	hints		bool
 	guesses		int
 	startTime	time.Time
 	won			bool
-	timer		*time.Time
 }
 
 func New(difficultyStr string, timeLimit int, hints bool) (*Game, error) {
@@ -42,26 +42,31 @@ func New(difficultyStr string, timeLimit int, hints bool) (*Game, error) {
 	}
 
 	return &Game{
-		target: target,
-		min: min,
-		max: max,
+		target: 	target,
+		min: 		min,
+		max: 		max,
 		difficulty: difficulty,
-		timeLimit: timeLimitDuration,
-		hints: hints,
-		startTime: time.Now(),
+		timeLimit: 	timeLimitDuration,
+		hints: 		hints,
+		startTime: 	time.Now(),
 	}, nil
 }
 
 func (g *Game) Play() error {
 	ctx := context.Background()
+	var cancel context.CancelFunc
 
 	if g.timeLimit > 0 {
-		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, g.timeLimit)
 		defer cancel()
 
 		g.timer = timer.New(g.timeLimit)
 		go g.timer.Start()
+		defer func() {
+			if g.timer != nil {
+				g.timer.Stop()
+			}
+		}()
 	}
 
 	ui.ShowGameStart(g.min, g.max, g.difficulty.String(), g.timeLimit)
@@ -70,6 +75,7 @@ func (g *Game) Play() error {
 		select {
 		case <-ctx.Done():
 			ui.ShowTimeout()
+			ui.ShowAnswer(g.target)
 			return g.endGame()
 		default:
 			guess, err := ui.GetGuess(g.min, g.max)
@@ -89,6 +95,13 @@ func (g *Game) Play() error {
 			if g.hints {
 				hint := g.generateHint(guess)
 				ui.ShowHint(hint)
+			} else {
+				// still showing basic higher/lower without detailed hints
+				if guess < g.target {
+					ui.ShowHint("Too low!")
+				} else {
+					ui.ShowHint("Too high!")
+				}
 			}
 		}
 	}
@@ -102,16 +115,20 @@ func (g *Game) generateHint(guess int) string {
 			return "Very close! Go higher."
 		} else if diff <= 5 {
 			return "Close! Go higher."
+		} else if diff <= 10 {
+			return "Go higher!!"
 		} else {
-			return "Too low!"
+			return "much higher"
 		}
 	} else {
 		if diff <= 2 {
 			return "Very close! Go lower."
 		} else if diff <= 5 {
 			return "Close! Go lower."
+		} else if diff <= 10 {
+			return "Goo lower!"
 		} else {
-			return "Too high!"
+			return "Much lower"
 		}
 	}
 }
@@ -131,9 +148,9 @@ func (g *Game) endGame() error {
 
 		score := &storage.Score{
 			Difficulty: g.difficulty.String(),
-			Guesses: g.guesses,
-			Time: duration,
-			Date: time.Now(),
+			Guesses: 	g.guesses,
+			Time: 		duration,
+			Date: 		time.Now(),
 		}
 
 		if err := storage.SaveScores(score); err != nil {
