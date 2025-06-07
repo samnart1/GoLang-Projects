@@ -6,16 +6,16 @@ import (
 	"net/http"
 
 	"github.com/samnart1/GoLang-Projects/005server/internal/config"
-	"github.com/samnart1/GoLang-Projects/005server/internal/log"
+	"github.com/samnart1/GoLang-Projects/005server/internal/logger"
 )
 
 type Server struct {
 	httpServer *http.Server
 	config *config.Config
-	logger *log.Logger
+	logger *logger.Logger
 }
 
-func New(cfg *config.Config, log *log.Logger) *Server {
+func New(cfg *config.Config, log *logger.Logger) *Server {
 	s := &Server{
 		config: cfg,
 		logger: log,

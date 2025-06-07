@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>About</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about" class="active">About</a>
+                <a href="/hello">Hello</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="about-section">
+                <h2>About This Server</h2>
+                <p>{{.Message}}</p>
+
+                <h3>Features implemented</h3>
+                <ul>
+                    <li><strong>http server:</strong> build with go's net/http package</li>
+                    <li><strong>routing:</strong> custom route handling with serveMux</li>
+                    <li><strong>middleware:</strong> logging, cors, and recovery middleware</li>
+                    <li><strong>templates:</strong> html template rendering with data binding</li>
+                    <li><strong>json apis:</strong> restful endpoints with json responses</li>
+                    <li><strong>static files:</strong> css, js, and image serving</li>
+                    <li><strong>configuration:</strong> environment-based config</li>
+                    <li><strong>logging:</strong> structured logging with different levels</li>
+                    <li><strong>graceful shutdown</strong> proper server lifecycle management</li>
+                </ul>
+
+                <h3>project structure</h3>
+                <p>this project follow's structure is as bellow</p>
+                <ul>
+                  <li><code>cmd</code> - CLI commands and application entry points</li>
+                    <li><code>internal</code> - private application code</li>
+                    <li><code>pkg</code> - public reusable packages</li>
+                    <li><code>web</code> - static assets and templates</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>Version: {{.Version}}</p>
+        </footer>
+    </div>
+    <script src="../static/js/app.js"></script>
+</body>
+</html>

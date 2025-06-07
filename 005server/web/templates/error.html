@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Error</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/hello">Hello</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="error-section">
+                <h2>{{.Title}}</h2>
+                <p>{{.Message}}</p>
+                <a href="/" class="btn">Go Home</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>Go Http server</p>
+        </footer>
+    </div>
+    <script src="../static/js/app.js"></script>
+</body>
+</html>
