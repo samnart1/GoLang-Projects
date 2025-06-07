@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{.Title}}</title>
+        <link rel="stylesheet" href="../static/css/style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>{{.Title}}</h1>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/hello">Hello</a>
+                </nav>
+            </header>
+
+            <main>
+                <div class="welcome-section">
+                    <h2>{{.Message}}</h2>
+                    <p>This is a simple http server built with Go. It demonstrates web development concepts including:</p>
+                    <ul>
+                        <li>http routing and handlers</li>
+                        <li>middleware implementation</li>
+                        <li>template rendering</li>
+                        <li>json apis</li>
+                        <li>static file serving</li>
+                        <li>graceful shutdown</li>
+                    </ul>
+                </div>
+
+                <div class="api-section">
+                    <h3>Try the api endpoints:</h3>
+                    <div class="endpoints">
+                        <div class="endpoint">
+                            <strong>GET /hello</strong>
+                            <p>simple hello message</p>
+                            <a href="/hello" class="btn">try it</a>
+                        </div>
+                        <div class="endpoint">
+                            <strong>GET /api/info</strong>
+                            <p>server information (json)</p>
+                            <a href="/api/info" class="btn">try it</a>
+                        </div>
+                        <div class="endpoint">
+                            <strong>GET /api/time</strong>
+                            <p>current server time (json)</p>
+                            <a href="/api/time" class="btn">try it</a>
+                        </div>
+                        <div class="endpoint">
+                            <strong>GET /health</strong>
+                            <p>health check endpoint</p>
+                            <a href="/health" class="btn">try it</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <p>Server time: {{.CurrentTime}} | Version {{.Version}}</p>
+            </footer>
+        </div>
+        <script src="../static/js/app.js"></script>
+    </body>
+</html>
