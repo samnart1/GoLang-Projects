@@ -68,3 +68,32 @@ func SanitizeFileName(fileName string) string {
 	return sanitized
 }
 
+func FormateFileSize(bytes int64) string {
+	const unit = 1024
+	if bytes < unit {
+		return fmt.Sprintf("%d B", bytes)
+	}
+
+	div, exp := int64(unit), 0
+	for n := bytes / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+
+	return fmt.Sprintf("%.1f %cB", float64(bytes)/float64(div), "KMGTPE"[exp])
+}
+
+func CreateTempFile(content string, prefix string) (string, error) {
+	tempFile, err := os.CreateTemp("", prefix+"*.txt")
+	if err != nil {
+		return "", fmt.Errorf("failed to create temp file: %w", err)
+	}
+	defer tempFile.Close()
+
+	if _, err := tempFile.WriteString(content); err != nil {
+		os.Remove(tempFile.Name())
+		return "", fmt.Errorf("failed to write to temp file: %w", err)
+	}
+
+	return tempFile.Name(), nil
+}
