@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/samnart1/GoLang/006reader/internal/config"
 	"github.com/samnart1/GoLang/006reader/internal/logger"
 	"github.com/spf13/cobra"
@@ -36,4 +39,39 @@ func init() {
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 }
 
-func initConfig() {}
+func initConfig() {
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		viper.AddConfigPath(home)
+		viper.AddConfigPath(".")
+		viper.SetConfigFile("yaml")
+		viper.SetConfigFile(".go-file-reader")
+	}
+
+	viper.SetEnvPrefix("FILE_READER")
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	}
+}
+
+func initializeConfig() error {
+	var err error
+
+	cfg, err = config.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	log, err = logger.New()
+	if err != nil {
+		return fmt.Errorf("failed to initialize logger: %w", err)
+	}
+
+	return nil
+}
