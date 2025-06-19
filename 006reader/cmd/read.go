@@ -1,7 +1,11 @@
 package cmd
 
 import (
-	"github.com/go-delve/delve/pkg/dwarf/reader"
+	"fmt"
+	"os"
+
+	"github.com/samnart1/GoLang/006reader/internal/formatter"
+	"github.com/samnart1/GoLang/006reader/internal/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +47,59 @@ func runRead(cmd *cobra.Command, args []string) error {
 
 	fileReader := reader.New(&reader.Config{
 		filePath:	filePath,
-		maxLines:	maxLines
+		maxLines:	maxLines,
+		ShowLines:	lineNumber,
+		Encoding:	encoding,
+		BufferSize:	cfg.Reader.BufferSize,
 	})
 
+	content, err := fileReader.Read()
+	if err != nil {
+		log.Error("Failed to read file",
+			logger.String("file", filePath),
+			logger.Error(err))
+		return fmt.Errorf("failed to read file: %w", err)
+	}
+
+	fmt_handler, err := formatter.New(format, &formatter.Config{
+		ShowLineNumbers:	lineNumber,
+		MaxWidth:			cfg.Formatter.MaxWidth,
+		Theme:				cfg.Formatter.Theme,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create formatter: %w", err)
+	}
+
+	output, err := fmt_handler.Format(content)
+	if err != nil {
+		return fmt.Errorf("failed to format content: %w", err)
+	}
+
+	fmt.Println(output)
+
+	log.Info("File read successfully",
+ 		logger.String("file", filePath),
+		logger.Int("lines", len(content.Lines)),
+		logger.String("format", format))
+
+	return nil
+}
+
+func validateFile(filePath string) error {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("file does not exist: %s", filePath)
+		}
+		return fmt.Errorf("cannot access file: %w", err)
+	}
+
+	if info.IsDir() {
+		return fmt.Errorf("path is a directory, not a file: %s", filePath)
+	}
+	if info.Size() > int64(cfg.Reader.MaxFileSize) {
+		return fmt.Errorf("file too large: %d bytes (max: %d)", info.Size(), cfg.Reader.MaxFileSize)
+	}
+
+	return nil
 }
