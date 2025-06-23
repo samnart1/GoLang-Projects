@@ -3,9 +3,10 @@ package reader
 import (
 	"bufio"
 	"fmt"
-	"go/scanner"
+	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -157,4 +158,55 @@ func GetFileInfo(filePath string) (*Metadata, error) {
 		Size: info.Size(),
 		ModTime: info.ModTime(),
 	}, nil
+}
+
+func ValidateFile(filePath string) error {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("file does not exist: %s", filePath)
+		}
+		return fmt.Errorf("cannot access file: %w", err)
+	}
+
+	if info.IsDir() {
+		return fmt.Errorf("path is a Directory: %s", filePath)
+	}
+
+	// let's try and open the file
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("cannot open file: %w", err)
+	}
+	file.Close()
+
+	return nil
+}
+
+func DetectEncoding(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	buffer := make([]byte, 1024)
+	n, err := file.Read(buffer)
+	if err != nil && err != io.EOF {
+		return "", err
+	}
+
+	if n >= 3 && buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF {
+		return "utf-8-bom", nil
+	}
+
+	if isValidUTF8(buffer[:n]) {
+		return "utf-8", nil
+	}
+
+	return "unknown", nil
+}
+
+func isValidUTF8(data []byte) bool {
+	return strings.ToValidUTF8(string(data), "") == string(data)
 }
