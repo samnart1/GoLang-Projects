@@ -3,33 +3,34 @@ package reader
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
 
 type WatchEvent struct {
-	Type 	string		`json:"type"`
-	Content	string		`json:"content"`
-	Time	time.Time	`json:"time"`
-	LineNum	int			`json:"line_num,omitempty"`
+	Type    string    `json:"type"`
+	Content string    `json:"content"`
+	Time    time.Time `json:"time"`
+	LineNum int       `json:"line_num,omitempty"`
 }
 
 type WatchConfig struct {
-	FilePath		string
-	TailMode		bool
-	PollInterval	int
-	BufferSize		int
+	FilePath     string
+	TailMode     bool
+	PollInterval int
+	BufferSize   int
 }
 
 type Watcher struct {
-	config		*WatchConfig
-	watcher		*fsnotify.Watcher
-	events		chan WatchEvent
-	errors 		chan error
-	lastSize 	int64
-	lastLineNum	int
-	done		chan bool
+	config      *WatchConfig
+	watcher     *fsnotify.Watcher
+	events      chan WatchEvent
+	errors      chan error
+	lastSize    int64
+	lastLineNum int
+	done        chan bool
 }
 
 func NewWatcher(config *WatchConfig) *Watcher {
@@ -37,7 +38,7 @@ func NewWatcher(config *WatchConfig) *Watcher {
 		config: config,
 		events: make(chan WatchEvent, 100),
 		errors: make(chan error, 10),
-		done: 	make(chan bool),
+		done:   make(chan bool),
 	}
 }
 
@@ -67,6 +68,45 @@ func (w *Watcher) Start() error {
 	}
 
 	return nil
+}
+
+func (w *Watcher) sendInitialContent() {
+	reader := New(&Config{
+		FilePath:   w.config.FilePath,
+		BufferSize: w.config.BufferSize,
+	})
+
+	content, err := reader.Read()
+	if err != nil {
+		w.errors <- fmt.Errorf("failed to read initial content: %w", err)
+		return
+	}
+
+	// Send each line as an event
+	for _, line := range content.Lines {
+		w.events <- WatchEvent{
+			Type:    "initial",
+			Content: line.Content,
+			Time:    time.Now(),
+			LineNum: line.Number,
+		}
+	}
+
+	w.lastLineNum = len(content.Lines)
+}
+
+func (w *Watcher) countLines() int {
+	reader := New(&Config{
+		FilePath:   w.config.FilePath,
+		BufferSize: w.config.BufferSize,
+	})
+
+	content, err := reader.Read()
+	if err != nil {
+		return 0
+	}
+
+	return len(content.Lines)
 }
 
 func (w *Watcher) Stop() {
@@ -110,9 +150,9 @@ func (w *Watcher) handleFileEvent(event fsnotify.Event) {
 		w.handleFileWrite()
 	} else if event.Has(fsnotify.Remove) || event.Has(fsnotify.Rename) {
 		w.events <- WatchEvent{
-			Type: "removed",
+			Type:    "removed",
 			Content: "File was removed or renamed",
-			Time: time.Now(),
+			Time:    time.Now(),
 		}
 	}
 }
@@ -139,9 +179,38 @@ func (w *Watcher) handleFileWrite() {
 	w.lastSize = currentSize
 }
 
+func (w *Watcher) readFullFile() {
+	reader := New(&Config{
+		FilePath:   w.config.FilePath,
+		BufferSize: w.config.BufferSize,
+	})
+
+	content, err := reader.Read()
+	if err != nil {
+		w.errors <- fmt.Errorf("failed to read file: %w", err)
+		return
+	}
+
+	
+	w.lastLineNum = len(content.Lines)
+
+	
+	var fullContent strings.Builder
+	for _, line := range content.Lines {
+		fullContent.WriteString(line.Content)
+		fullContent.WriteString("\n")
+	}
+
+	w.events <- WatchEvent{
+		Type:    "full_update",
+		Content: fullContent.String(),
+		Time:    time.Now(),
+	}
+}
+
 func (w *Watcher) readNewLines() {
 	reader := New(&Config{
-		FilePath: w.config.FilePath,
+		FilePath:   w.config.FilePath,
 		BufferSize: w.config.BufferSize,
 	})
 
@@ -154,9 +223,9 @@ func (w *Watcher) readNewLines() {
 	for i := w.lastLineNum; i < len(content.Lines); i++ {
 		line := content.Lines[i]
 		w.events <- WatchEvent{
-			Type: "new_line",
+			Type:    "new_line",
 			Content: line.Content,
-			Time: time.Now(),
+			Time:    time.Now(),
 			LineNum: line.Number,
 		}
 	}

@@ -45,7 +45,7 @@ func runWatch(cmd *cobra.Command, args []string) error {
 
 	watcher := reader.NewWatcher(&reader.WatchConfig{
 		FilePath:		filePath,
-		Tailmode:		tailMode,
+		TailMode:		tailMode,
 		PollInterval:	interval,
 		BufferSize:		cfg.Reader.BufferSize,
 	})
@@ -59,7 +59,7 @@ func runWatch(cmd *cobra.Command, args []string) error {
 	if err := watcher.Start(); err != nil {
 		return fmt.Errorf("failed to start watcher: %w", err)
 	} 
-	defer watcher.stop()
+	defer watcher.Stop()
 
 	for {
 		select {

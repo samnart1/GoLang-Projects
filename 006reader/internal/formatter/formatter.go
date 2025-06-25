@@ -15,15 +15,15 @@ type Config struct {
 	ShowLineNumbers bool
 	MaxWidth		int
 	Theme			string
-	colorOutput		bool
+	ColorOutput		bool
 }
 
 func New(format string, config *Config) (Formatter, error) {
 	if config == nil {
 		config = &Config{
 			MaxWidth: 120,
-			Theme: "defaultl",
-			colorOutput: true,
+			Theme: "default",
+			ColorOutput: true,
 		}
 	}
 

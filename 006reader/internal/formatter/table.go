@@ -44,6 +44,10 @@ func (f *TableFormatter) Format(content *reader.Content) (string, error) {
 	return builder.String(), nil
 }
 
+func (f *TableFormatter) Name() string {
+	return "TableFormatter"
+}
+
 func (f *TableFormatter) calculateContentWidth(lines []reader.Line) int {
 	maxWidth := 20
 

@@ -46,6 +46,10 @@ func (f *PlainFormatter) Format(content *reader.Content) (string, error) {
 	return builder.String(), nil
 }
 
+func (f *PlainFormatter) Name() string {
+	return "PlainFormatter"
+}
+
 func (f *PlainFormatter) formatLineNumber(lineNum, totalLines int) string {
 	width := len(fmt.Sprintf("%d", totalLines))
 	return fmt.Sprintf("%*d", width, lineNum)

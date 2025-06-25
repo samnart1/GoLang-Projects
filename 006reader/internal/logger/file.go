@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -54,7 +55,45 @@ func (fl *FileLogger) Close() error {
 }
 
 func (fl *FileLogger) RotateLog() error {
-	// todo: implement log rotation
+	if err := fl.Logger.Sync(); err != nil {
+		return fmt.Errorf("failed to sync logger: %w", err)
+	}
+	if err := fl.logFile.Close(); err != nil {
+		return fmt.Errorf("failed to close log file: %w", err)
+	}
+
+	
+	dir := filepath.Dir(fl.logFile.Name())
+	base := filepath.Base(fl.logFile.Name())
+	nameWithoutExt := strings.TrimSuffix(base, filepath.Ext(base))
+	timestamp := time.Now().Format("2006-01-02-15-04-05")
+	newPath := filepath.Join(dir, fmt.Sprintf("%s-%s.log", nameWithoutExt, timestamp))
+
+	
+	if err := os.Rename(fl.logFile.Name(), newPath); err != nil {
+		return fmt.Errorf("failed to rotate log file: %w", err)
+	}
+
+	
+	logFile, err := os.OpenFile(fl.logFile.Name(), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to create new log file: %w", err)
+	}
+
+	
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.TimeKey = "timestamp"
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	core := zapcore.NewCore(
+		zapcore.NewJSONEncoder(encoderConfig),
+		zapcore.AddSync(logFile),
+		zapcore.InfoLevel,
+	)
+
+	
+	fl.Logger = &Logger{Logger: zap.New(core, zap.AddCaller())}
+	fl.logFile = logFile
 
 	return nil
 }

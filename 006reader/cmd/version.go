@@ -35,10 +35,10 @@ func runVersion(cmd *cobra.Command, args []string) {
 	fmt.Printf("Platform:	%s\n", info.OS, info.Arch)
 }
 
-func SetVersion(version, commit, date string) {
-	buildVersion = version
-	buildCommit = commit
-	buildDate = date
+func SetVersion(v, c, d string) {
+	buildVersion = v
+	buildCommit = c
+	buildDate = d
 
-	version.SetBuildInfo(version, commit, date)
+	version.SetBuildInfo(v, c, d)
 }

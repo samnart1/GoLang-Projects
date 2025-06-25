@@ -6,6 +6,7 @@ import (
 
 	"github.com/samnart1/GoLang/006reader/internal/formatter"
 	"github.com/samnart1/GoLang/006reader/internal/logger"
+	"github.com/samnart1/GoLang/006reader/internal/reader"
 	"github.com/spf13/cobra"
 )
 
@@ -46,8 +47,8 @@ func runRead(cmd *cobra.Command, args []string) error {
 	}
 
 	fileReader := reader.New(&reader.Config{
-		filePath:	filePath,
-		maxLines:	maxLines,
+		FilePath:	filePath,
+		MaxLines:	maxLines,
 		ShowLines:	lineNumber,
 		Encoding:	encoding,
 		BufferSize:	cfg.Reader.BufferSize,
