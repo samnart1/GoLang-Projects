@@ -1,0 +1,5 @@
+{
+    "unclosed_string: "value,
+    "missing_value":,
+    "invalid_array": ["item1" "item2"],
+}

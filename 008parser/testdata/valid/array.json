@@ -1,0 +1,10 @@
+[
+    "string",
+    42,
+    true,
+    null,
+    {
+        "key": "value"
+    },
+    [1, 2, 3]
+]

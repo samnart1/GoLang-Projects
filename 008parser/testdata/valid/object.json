@@ -1,0 +1,11 @@
+{
+    "string": "Hello, World!",
+    "number": 42.5,
+    "integer": 123,
+    "boolean": true,
+    "null": null,
+    "array": [1, 2, 3],
+    "object": {
+        "nested": "value"
+    }
+}

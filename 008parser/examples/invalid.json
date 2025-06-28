@@ -1,0 +1,14 @@
+{
+    "name": "Test Invalid JSON",
+    "description": "This file contains invalid JSON syntax",
+    "items": [
+        "item1",
+        "item2",
+        "item3"
+    ]
+    "status": true, 
+    "nested": {
+        "key1": "value1"
+        "key2": "value2" 
+    }
+}

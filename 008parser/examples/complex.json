@@ -1,0 +1,39 @@
+{
+    "id": "072a5c34-6c34-4a76-9124-ec45713d8bc1",
+    "created_at": "2025-06-27T11:50:42Z",
+    "user": {
+        "id": 1234,
+        "username": "samnart1",
+        "profile": {
+            "firstName": "Sam",
+            "lastName": "Nart",
+            "location": "New York"
+        }
+    },
+    "settings": {
+        "theme": "dark",
+        "notifications": {
+            "email": true,
+            "push": false,
+            "frequency": "daily"
+        },
+        "preferences": [
+            "dashboard",
+            "reports",
+            "analytics"
+        ]
+    },
+    "data": [
+        {
+            "type": "metric",
+            "value": 42.5,
+            "unit": "ms",
+            "tags": ["performance", "api"]
+        },
+        {
+            "type": "event",
+            "value": "user_login",
+            "timestamp": "2025-06-27T11:50:42Z"
+        }
+    ]
+}
