@@ -1,0 +1,18 @@
+{
+    "level1": {
+        "level2": {
+            "level3": {
+                "level4": {
+                    "level5": {
+                        "data": "Deep nested value",
+                        "array": [
+                            {
+                                "deep": "array object"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
