@@ -33,3 +33,7 @@ func Load() (*Config, error) {
 
 	return cfg, nil
 }
+
+func (c *Config) Validate() error {
+	return nil
+}
