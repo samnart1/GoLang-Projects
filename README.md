@@ -44,32 +44,7 @@ I'll be continuously adding and refining projects here a sI learn - feel free to
 This project is open source and available under the [MIT License](LICENSE)
 > [Sam Nart](https://samnart1.github.io/samnart1/)
 
-<!--Beginner Projects (0–10): 
-Hello World CLI: Your first Go program—print "Hello, World!" to the console.
-
-Basic Calculator: Implement a simple calculator that performs basic arithmetic operations.
-
-To-Do List CLI: Create a command-line to-do list manager that allows adding and removing tasks.
-
-Number Guessing Game: Develop a game where the computer randomly selects a number, and the user has to guess it.
-
-Simple HTTP Server: Build a basic HTTP server that responds with "Hello, Go!" to all requests.
-
-File Reader: Write a program that reads and displays the contents of a text file.
-
-Basic Web Scraper: Create a tool that fetches and displays the title of a webpage.
-
-JSON Parser: Develop a program that parses a JSON file and prints its contents.
-
-Simple Logger: Implement a logging utility that writes messages to a log file with timestamps.
-
-Simple Timer: Build a countdown timer that alerts the user when time is up.
-ByteGoblin
-+4
-calltutors.com
-+4
-topprojectideas.com
-+4
+<!--
 
 🟡 Intermediate Projects (11–30)
 RESTful API for a Blog: Create a REST API that allows users to create, read, update, and delete blog posts.
