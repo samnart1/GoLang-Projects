@@ -3,6 +3,7 @@ module github.com/samnart1/golang/010timer
 go 1.24.2
 
 require (
+	github.com/briandowns/spinner v1.23.2
 	github.com/fatih/color v1.18.0
 	github.com/spf13/viper v1.20.1
 )
@@ -22,6 +23,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
