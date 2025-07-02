@@ -53,7 +53,7 @@ func (c *Countdaown) Start() error {
 			}
 
 			if c.config.ShowProgress {
-				c.display.showProgress(c.remaining, c.config.Duration)
+				c.display.ShowProgress(c.remaining, c.config.Duration)
 			}
 		}
 	}

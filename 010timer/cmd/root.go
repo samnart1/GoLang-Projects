@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 			timer alarm -t 14:30`,
 
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return initConfig()
+		return nil
 	},
 }
 
@@ -53,13 +53,13 @@ func init() {
 	viper.BindPFlag("quiet", rootCmd.PersistentFlags().Lookup("quiet"))
 }
 
-func initConfig() error {
+func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			return fmt.Errorf("error finding home directory: %w", err)
+			 fmt.Errorf("error finding home directory: %w", err)
 		}
 
 		viper.AddConfigPath(home)
@@ -76,10 +76,8 @@ func initConfig() error {
 	var err error
 	cfg, err = config.Load()
 	if err != nil {
-		return fmt.Errorf("error loading config: %w", err)
+		 fmt.Errorf("error loading config: %w", err)
 	}
-
-	return nil
 }
 
 func GetConfig() *config.Config {

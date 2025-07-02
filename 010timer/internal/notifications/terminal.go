@@ -34,15 +34,15 @@ func (tn *TerminalNotifier) Show(message string) error {
 	return nil
 }
 
-func (tn *TerminalNotifier) ShowBanner(title, message string) error {
-	if !tn.enabled {
-		return nil
-	}
+// func (tn *TerminalNotifier) ShowBanner(title, message string) error {
+// 	if !tn.enabled {
+// 		return nil
+// 	}
 
-	maxLen := len(title)
-	if len(message) > maxLen {
-		maxLen = len(message)
-	}
+// 	maxLen := len(title)
+// 	if len(message) > maxLen {
+// 		maxLen = len(message)
+// 	}
 
-	border := strings.Repeat()
-}
+// 	border := strings.Repeat()
+// }

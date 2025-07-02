@@ -36,10 +36,12 @@ clean: ## Clean build artifacts
 	@rm -rf $(BUILD_DIR)
 	@go clean
 
-install: build ## Install the binary to $GOPATH/bin
+install: build ## Install the binary to ~/bin or /usr/local/bin
 	@echo "$(YELLOW)Installing $(BINARY_NAME)...$(NC)"
-	@cp $(BUILD_DIR)/$(BINARY_NAME) $(GOPATH)/bin/
-	@echo "$(GREEN)Installed to $(GOPATH)/bin/$(BINARY_NAME)$(NC)"
+	@mkdir -p $(HOME)/bin
+	@cp $(BUILD_DIR)/$(BINARY_NAME) $(HOME)/bin/$(BINARY_NAME)
+	@echo "$(GREEN)Installed to $(HOME)/bin/$(BINARY_NAME)$(NC)"
+
 
 dev: ## Run in development mode with hot reload
 	@echo "$(YELLOW)Starting development server...$(NC)"

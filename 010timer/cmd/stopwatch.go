@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/samnart1/golang/010timer/internal/timer"
 	"github.com/samnart1/golang/010timer/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -41,4 +42,6 @@ func runStopwatch(cmd *cobra.Command, args []string) error {
 		Verbose: verbose,
 		Color: config.Display.Color,
 	}
+	sw := timer.NewStopwatch(stopwatchConfig)
+	return sw.Start()
 }

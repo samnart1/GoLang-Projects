@@ -4,12 +4,71 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 
 	"github.com/samnart1/golang/010timer/pkg/types"
 )
+
+type SoundPlayer struct {
+	enabled bool
+	file string
+}
+
+func NewSoundPlayer(enabled bool, file string) *SoundPlayer {
+	return &SoundPlayer{
+		enabled: enabled,
+		file: file,
+	}
+}
+
+func (sp *SoundPlayer) Play() error {
+	if !sp.enabled {
+		return nil
+	}
+
+	var cmd *exec.Cmd
+	
+	switch runtime.GOOS {
+	case "darwin":
+		if sp.file != "" {
+			cmd = exec.Command("afplay", sp.file)
+		} else {
+			cmd  =exec.Command("say", "Time is up")
+		}
+	case "linux":
+		if sp.file != "" {
+			players := []string{"aplay", "paplay", "play"}
+			for _, player := range players {
+				if _, err := exec.LookPath(player); err == nil {
+					cmd = exec.Command(player, sp.file)
+					break
+				}
+			}
+		}
+		if cmd == nil {
+			cmd = exec.Command("speaker-test", "-t", "sine", "-f", "1000", "-l", "1")
+		}
+	case "windows":
+		if sp.file != "" {
+			cmd = exec.Command("powershell", "-c", fmt.Sprintf(`(New-Object Media.SoundPlayer "%s").PlaySync()`, sp.file))
+		} else {
+			cmd = exec.Command("powershell", "-c", `[console]::beep(1000,500)`)
+		}
+	default:
+		return fmt.Errorf("unsupported operating system: %s", runtime.GOOS)
+	}
+
+	if cmd != nil {
+		return cmd.Run()
+	}
+
+	return fmt.Errorf("no suitable audio player found")
+}
+		
 
 type BaseTimer struct {
 	state 		types.TimerState

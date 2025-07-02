@@ -34,7 +34,7 @@ func (a *Alarm) Start() error {
 		fmt.Printf("Time until alarm: %v\n", a.config.Duration)
 	}
 
-	a.Start()
+	a.start()
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
 
