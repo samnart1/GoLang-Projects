@@ -125,7 +125,28 @@ func (s *Stopwatch) handleInput() error {
 
 		switch input {
 		case " ", "space":
-			if s.state == types.StateRunning {}
+			if s.state == types.StateRunning {
+				s.Pause()
+			} else if s.state == types.StatePaused || s.state == types.StateStopped {
+				if s.state == types.StateStopped {
+					s.start()
+				} else {
+					s.Resume()
+				}
+			}
+		case "l", "lap":
+			if s.config.ShowLaps {
+				s.RecordLap()
+			}
+		case "r", "reset":
+			s.Reset()
+		case "q", "quit":
+			s.Stop()
+			return nil
+		default:
+			fmt.Printf("Unknown command: %s\n", input)
 		}
 	}
+
+	return scanner.Err()
 }
