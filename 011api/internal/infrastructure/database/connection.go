@@ -4,9 +4,15 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+
+	
+    _ "github.com/jackc/pgx/v5/stdlib"
 )
 
+
+
 type Config struct {
+	Driver		string // "postgres"
 	Port		int
 	Host		string
 	DBName		string
@@ -23,7 +29,7 @@ func NewConnection(cfg Config) (*DB, error) {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.DBName, cfg.SSLMode)
 
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open(cfg.Driver, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database connection: %w", err)
 	}
