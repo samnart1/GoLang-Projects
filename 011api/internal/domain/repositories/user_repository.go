@@ -11,7 +11,7 @@ type UserRepository interface {
 	GetById(ctx context.Context, id int) (*entities.User, error)
 	GetByEmail(ctx context.Context, email string) (*entities.User, error)
 	GetByUsername(ctx context.Context, username string) (*entities.User, error)
-	Update(ctx context.Context, id int, user *entities.UserInput) (*entities.UserInput, error)
+	Update(ctx context.Context, id int, user *entities.UserInput) (*entities.User, error)
 	Delete(ctx context.Context, id int) error
 	List(ctx context.Context, limit, offset int) ([]*entities.User, error)
 	Count(ctx context.Context) (int, error)
