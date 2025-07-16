@@ -28,6 +28,10 @@ type UserInput struct {
 }
 
 func (u *UserInput) Validate() error {
+	// u.Email = strings.ToLower(strings.TrimSpace(u.Email))
+	u.Email = strings.TrimSpace(strings.ToLower(u.Email))
+	u.Username = strings.TrimSpace(u.Username)
+	
 	if u.Email == "" {
 		return fmt.Errorf("email is required")
 	}
@@ -51,9 +55,6 @@ func (u *UserInput) Validate() error {
 	if len(u.Password) < 8 {
 		return fmt.Errorf("password must be more than 7 characters")
 	}
-
-	u.Email = strings.ToLower(strings.TrimSpace(u.Email))
-	u.Username = strings.TrimSpace(u.Username)
 
 	return nil
 }
